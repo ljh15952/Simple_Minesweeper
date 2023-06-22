@@ -1,15 +1,15 @@
 let canvas = document.getElementById('canvas');
 let ctx = canvas.getContext('2d')
 
-let p = {x: -1, y: -1};
+let pos = {x: -1, y: -1};
 
-let board = Array(16).fill(0).map(()=>Array(30).fill(0))
+let board = {num: Array(16).fill(0).map(()=>Array(30).fill(0)),
+			info: Array(16).fill(0).map(()=>Array(30).fill(0))};
 
+let mx = [-1,-1,-1,0,0,1,1,1];
+let my = [-1,0,1,-1,1,-1,0,1];
 
-const getMousep = e => {
-	const canv = e.target.getBoundingClientRect();
-	return {};
-}
+let isclicked = false;
 
 canvas.addEventListener('mousemove', e => {
 	const canv = canvas.getBoundingClientRect();
@@ -17,24 +17,21 @@ canvas.addEventListener('mousemove', e => {
 })
 
 canvas.addEventListener('click', () => {
-	console.log(pos);
-	board[pos.y][pos.x] = 0;
+	board.info[pos.y][pos.x] = 1;
 	drawBoard();
 })
 
-// 고급 : 가로 30, 세로 16, 지뢰 99개 (20.6%)
-// -2 지뢰 -1 클릭 0 기본
 ctx.font = "15px Arial";
 const drawBoard = () => {
 	ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);
 	
-	board.map((a, i)=>{
+	board.info.map((a, i)=>{
 		a.map((b, j)=>{
-			if(b === 0){
-				ctx.fillRect(j * 18, i * 18, 17, 17);
-			}else{
+			if(b === 1){
 				ctx.strokeRect(j * 18, i * 18, 17, 17);
-				ctx.fillText(b,j * 18 + 4, i * 18 + 14);	
+				ctx.fillText(board.num[i][j],j * 18 + 4, i * 18 + 14);	
+			}else{
+				ctx.fillRect(j * 18, i * 18, 17, 17);
 			}
 		})
 	})
@@ -42,20 +39,25 @@ const drawBoard = () => {
 	
 }
 
-const setMine = () => {
-	rp = {x: Math.floor(Math.random() * 30), y: Math.floor(Math.random() * 16)};
-	if(board[rp.y][rp.x] === -2) {
-		setMine();
+const setBoard = (y,x) =>{
+	for(let k = 0; k < 8; ++k){
+		if(y + my[k] < 0 || y + my[k] >= 16 
+		|| x + mx[k] < 0 || x + mx[k] >= 30) 
+			continue;
+		if(board.num[y + my[k]][x + mx[k]] === '*')
+			continue;
+		board.num[y + my[k]][x + mx[k]]++;
 	}
-	else{
-		board[rp.y][rp.x] = -2;
-	}	
 }
 
-//setBoard
+const setMine = () => {
+	rp = {x: Math.floor(Math.random() * 30), y: Math.floor(Math.random() * 16)};
+	if(board.num[rp.y][rp.x] === '*') setMine();
+	else {
+		board.num[rp.y][rp.x] = '*';
+		setBoard(rp.y, rp.x);
+	}
+}
 
 for(let i = 0; i < 99; ++i) setMine();
-
-console.log(board);
-
 drawBoard();
