@@ -3,7 +3,7 @@ let ctx = canvas.getContext('2d')
 
 let p = {x: -1, y: -1};
 
-let board = Array(16).fill(-1).map(()=>Array(30).fill(-1))
+let board = Array(16).fill(0).map(()=>Array(30).fill(0))
 
 
 const getMousep = e => {
@@ -23,13 +23,14 @@ canvas.addEventListener('click', () => {
 })
 
 // 고급 : 가로 30, 세로 16, 지뢰 99개 (20.6%)
+// -2 지뢰 -1 클릭 0 기본
 ctx.font = "15px Arial";
 const drawBoard = () => {
 	ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);
 	
 	board.map((a, i)=>{
 		a.map((b, j)=>{
-			if(b === -1){
+			if(b === 0){
 				ctx.fillRect(j * 18, i * 18, 17, 17);
 			}else{
 				ctx.strokeRect(j * 18, i * 18, 17, 17);
@@ -40,5 +41,21 @@ const drawBoard = () => {
 	
 	
 }
+
+const setMine = () => {
+	rp = {x: Math.floor(Math.random() * 30), y: Math.floor(Math.random() * 16)};
+	if(board[rp.y][rp.x] === -2) {
+		setMine();
+	}
+	else{
+		board[rp.y][rp.x] = -2;
+	}	
+}
+
+//setBoard
+
+for(let i = 0; i < 99; ++i) setMine();
+
+console.log(board);
 
 drawBoard();
