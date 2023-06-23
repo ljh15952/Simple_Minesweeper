@@ -1,10 +1,89 @@
-let canvas = document.getElementById('canvas'); let ctx = canvas.getContext('2d')
-ctx.font = "15px Arial";
-let pos = {x: -1, y: -1};
-let board = {num: Array(16).fill(0).map(()=>Array(30).fill(0)),info: Array(16).fill(0).map(()=>Array(30).fill(0))};
-let mx = [-1,-1,-1,0,0,1,1,1];
-let my = [-1,0,1,-1,1,-1,0,1];
+const canvas = document.getElementById('canvas'); 
+const ctx = canvas.getContext('2d')
 
+// 설정 상수들
+const tileSize = 18;
+const numRows = 16;
+const numCols = 30;
+const numMines = 99;
+
+let board = {
+	// 셀 관리 배열 지뢰인지 아닌지 지뢰가 아니라면 근처 지뢰 수 가 몇개인지 관리하는 배열
+	cells: Array(16).fill(null).map(()=>Array(30).fill(null)),
+	// 클릭한 셀 관리 배열 클릭 = true 안클릭(기본상태) = false
+	revealed: Array(16).fill(null).map(()=>Array(30).fill(null)),
+	// 깃발로 넣었는지 관리 배열 깃발 = true 안클릭(기본상태) = false
+	flagged: Array(16).fill(null).map(()=>Array(30).fill(null)),
+};
+
+// 변수들 게임이 끝났는가 아닌가, 남은 지뢰의 수
+let gameOver = false;
+let minesLeft = numMines;
+
+// 클릭 이벤트 리스너 선언
+canvas.addEventListener('click', handleCellClick);
+canvas.addEventListener('contextmenu', handleCellRightClick);
+
+initializeBoard();
+drawBoard();
+
+function initializeBoard(){
+	// Create cells
+	for(let row = 0; row < numRows; row++){
+		for(let col = 0; col < numCols; col++){
+			board.cells[row][col] = {
+				mine: false,
+				count: 0
+			}
+		}
+	}
+	
+	// Place mines randomly
+	let minesToPlace = numMines;
+	while(minesToPlace > 0){
+		const row = Math.floor(Math.random() * numRows);
+		const col = Math.floor(Math.random() * numCols);
+		if(!board.cells[row][col].mine){
+			board.cells[row][col].mine = true;
+			minestoPlace--;
+		}
+	}
+	
+	// 근처 지뢰 개수 카운팅
+	for(let row = 0; row < numRows; row++){
+		for(let col = 0; col < numCols; col++){
+			if(!board.cells[row][col].mine){
+				const count = countNeighboringMines(row, col);
+				board.cells[row][col].count = count;
+			}
+		}
+	}
+}
+
+function countNeighboringMines(row, col){
+	let count = 0;
+	for(let i = -1; i <= 1; i++){
+		for(let j = -1; j <= 1; j++){
+			const newRow = row + i;
+			const newCol = col + j;
+			if(isValidCell(newRow, newCol) && board.cells[newRow][newColl].mine)
+				count++;
+		}
+	}
+	return count;
+}
+
+function handleCellClick(event){
+	if(gameOver){
+		return;
+	}
+	
+	
+	
+	
+}
+
+ctx.font = "15px Arial";
 
 canvas.addEventListener('mousemove', e => {
 	const canv = canvas.getBoundingClientRect();

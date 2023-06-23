@@ -170,7 +170,7 @@ function drawBoard() {
 
       if (board.revealed[row][col]) {
         ctx.fillStyle = '#ccc';
-        ctx.fillRect(x, y, tileSize, tileSize);
+        ctx.fillRect(x, y, tileSize-1, tileSize-1);
 
         if (board.cells[row][col].mine) {
           ctx.fillStyle = 'red';
@@ -180,16 +180,16 @@ function drawBoard() {
         } else if (board.cells[row][col].count > 0) {
           ctx.font = '12px Arial';
           ctx.fillStyle = 'black';
-          ctx.fillText(board.cells[row][col].count, x + tileSize / 3, y + tileSize / 2);
+          ctx.fillText(board.cells[row][col].count, x + tileSize / 3, y + tileSize / 1.5);
         }
       } else {
         ctx.fillStyle = '#999';
-        ctx.fillRect(x, y, tileSize, tileSize);
+        ctx.fillRect(x, y, tileSize-1, tileSize-1);
 
         if (board.flagged[row][col]) {
           ctx.font = '12px Arial';
           ctx.fillStyle = 'red';
-          ctx.fillText('🚩', x + tileSize / 3, y + tileSize / 2);
+          ctx.fillText('🚩', x + tileSize / 5, y + tileSize / 1.5);
         }
       }
     }
