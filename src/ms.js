@@ -7,7 +7,6 @@ let my = [-1,0,1,-1,1,-1,0,1];
 
 
 canvas.addEventListener('mousemove', e => {
-	e.preventDefault();
 	const canv = canvas.getBoundingClientRect();
 	pos = {x: Math.floor((e.clientX - canv.left) / 18), y: Math.floor((e.clientY - canv.top) / 18) };
 })
@@ -49,7 +48,6 @@ const dfs = (y,x) => {
 	
 	if(board.num[y][x] > 0 || board.num[y][x] === '*')
 		return;
-	
 	
 	for(let i = 0; i < 8; ++i){
 		if(y + my[i] < 0 || y + my[i] >= 16 
