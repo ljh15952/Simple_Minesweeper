@@ -12,17 +12,28 @@ let board = {
 };
 
 let minesLeft = numMines;
-
+let gameOver = false;
 
 canvas.addEventListener('click', handleCellClick);
 canvas.addEventListener('contextmenu', handleCellRightClick);
-
 
 initializeBoard();
 drawBoard();
 
 function handleCellClick(event){
-	console.log('1');
+	if(gameOver){
+		return;
+	}
+	
+	const rect = canvas.getBoundingClientRect();
+	const mouseX = event.clientX - rect.left;
+	const mouseY = event.clientY - rect.top;
+	
+	const cellRow = Math.floor(mouseX / tileSize);
+	const cellCol = Math.floor(mouseY / tileSize);
+	
+	console.log(cellRow + ' ' + cellCol);
+	
 }
 
 function handleCellRightClick(event){
@@ -42,15 +53,14 @@ function initializeBoard() {
 		}
 	}
 	
-	board.cells[3][3].revealed = true;
-	
-	board.cells[4][3].revealed = true;
-	board.cells[4][3].mine = true;
-	
-	board.cells[5][5].revealed = true;
-	board.cells[5][5].count = 3;
-	
-	board.cells[5][3].flag = true;
+	let minesToPlace = numMines;while (minesToPlace > 0) {
+		const row = Math.floor(Math.random() * numRows);
+		const col = Math.floor(Math.random() * numCols);
+		if (!board.cells[row][col].mine) {
+		  board.cells[row][col].mine = true;
+		  minesToPlace--;
+		}
+	}
 }
 
 
